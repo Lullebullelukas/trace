@@ -81,7 +81,8 @@ class ClockPro:
 
                     self.hot_pages.discard(page)
                     self.test_pages.discard(page)
-               
+                else: 
+                    self.increase_capacity()
 
 
             else:
@@ -109,7 +110,6 @@ class ClockPro:
             if page in self.test_pages:
                 #when hot hand passes over a page in test period we terminate that test period
                 self.test_pages.discard(page)
-                self.increase_capacity()
             
 
 
@@ -176,7 +176,6 @@ class ClockPro:
                     self.non_res_pages.discard(page)
                     self.non_res_cache[self.free_index] = None
 
-                    self.decrease_capacity()
                     #it was in test period when got it, promote to hot
                     if len(self.hot_pages)+1 >= self.capacity_hot:
                         self.move_hot_hand()
