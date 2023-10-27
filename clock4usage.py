@@ -88,8 +88,8 @@ def simulate(accesses):
 
         add_or_increment(cache,page)
     
-    print("page faults: " + str(faults))
-    print(f"hits: {hits}")
+    print(f"Hits: {hits}")
+    print("Faults: " + str(faults))
 
 
 
