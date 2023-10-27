@@ -182,13 +182,10 @@ class ClockPro:
                         self.move_hot_hand()
 
                     self.hot_pages.add(page)
+                else:
+                    self.test_pages.add(page) 
 
-                
 
-                if len(self.non_res_pages) > self.cache_size:
-                    self.move_test_hand()
-
-                self.test_pages.add(page) 
                 
 
     
