@@ -1,6 +1,7 @@
 import sys
 
-
+#TODO: add to demoted set
+        #call decrement and increment
 
 class ClockPro:
     def __init__(self):
@@ -18,6 +19,7 @@ class ClockPro:
         self.hot_pages = set()
         self.test_pages = set()
         self.non_res_pages = set()
+        self.demoted_cold_pages = set()
         self.capacity_hot = self.cache_size / 2
 
 
@@ -54,7 +56,6 @@ class ClockPro:
                     self.test_pages.discard(page)
                     #it was in test period when got it, promote to hot
 
-                    self.decrease_capacity()
                     if len(self.hot_pages)+1 >= self.capacity_hot:
                         self.move_hot_hand()
                     self.hot_pages.add(page)
@@ -81,8 +82,8 @@ class ClockPro:
 
                     self.hot_pages.discard(page)
                     self.test_pages.discard(page)
-                else: 
-                    self.increase_capacity()
+                    self.demoted_cold_pages.discard(page)
+               
 
 
             else:
@@ -104,6 +105,8 @@ class ClockPro:
                 if self.refs[index] < 1:
                     #not a hit so we can remove from hot
                     self.hot_pages.discard(page)
+                    #we demoted a hot page so we put it in the demoted cold pages set
+                    self.demoted_cold_pages.add(page)
                     removed = True
               
                 self.refs[index] = 0
@@ -130,29 +133,46 @@ class ClockPro:
                 self.test_pages.discard(page)
 
             
-    def increase_capacity(self):
-        if self.capacity_hot < self.cache_size -1:
-            self.capacity_hot+=1
 
+
+#only to be called when accessing a non-resident cold page
     def decrease_capacity(self):
-        if self.capacity_hot > 1:
-            self.capacity_hot-=1
+        c_n = len(self.non_res_pages)
+        c_d = len(self.demoted_cold_pages)
+        self.capacity_hot -= min(1, c_d/c_n)
+
+        if self.capacity_hot < 1:
+            self.capacity_hot = 1 
+        
+
+#only to be called when reference bit set on a redsident cold page demoted from hot page status
+    def increase_capacity(self):
+        c_n = len(self.non_res_pages)
+        c_d = len(self.demoted_cold_pages)
+        self.capacity_hot += min(1, c_n/c_d)
+
+        if self.capacity_hot > self.cache_size:
+            self.capacity_hot = self.cache_size
+
+
 
 
     def simulate(self):
         #fill cache until its full
         trace = self.trace
-        while len(self.cache) < self.cache_size:
+        initial_faults = 0
+        while initial_faults < self.cache_size:
             page = trace.pop(0)
             if page in self.cache:
                 #hit
                 self.hits+=1
-                self.ref[self.cache.index(page)] = 1
+                self.refs[self.cache.index(page)] = 1
             else: 
                 #fault
-                self.fault+=1
+                self.faults+=1
                 self.cache[self.free_index] = page
                 self.free_index+=1
+                initial_faults+=1
 
         #cache is now filled
         #for every miss we now need to evict
@@ -173,21 +193,20 @@ class ClockPro:
                 self.cache[self.free_index] = page
 
                 if page in self.non_res_pages:
+                    #it was in test period when got it, promote to hot
                     self.non_res_pages.discard(page)
                     self.non_res_cache[self.free_index] = None
 
-                    #it was in test period when got it, promote to hot
+                    self.decrease_capacity()
+
                     if len(self.hot_pages)+1 >= self.capacity_hot:
                         self.move_hot_hand()
 
                     self.hot_pages.add(page)
+                else:
+                    self.test_pages.add(page) 
 
-                
 
-                if len(self.non_res_pages) > self.cache_size:
-                    self.move_test_hand()
-
-                self.test_pages.add(page) 
                 
 
     

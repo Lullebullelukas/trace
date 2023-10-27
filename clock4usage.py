@@ -3,7 +3,7 @@ import sys
 global clock_arm, list_of_pages, faults, hits
 clock_arm=0
 cache_size = 255 #how many pages we can fit
-list_of_pages = [None] * 255
+list_of_pages = [None] * cache_size
 faults = 0
 hits = 0
 
@@ -100,6 +100,12 @@ def main():
     else:
         file_path = sys.argv[1]
     string_list = scan_file_into_list(file_path)
+    uniques = set()
+    for string in string_list:
+        uniques.add(string)
+
+    print(f"Working set size: {len(uniques)}")
+    print(f"list len {len(string_list)}")
     simulate(string_list)
 
             

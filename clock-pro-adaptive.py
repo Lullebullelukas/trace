@@ -142,7 +142,8 @@ class ClockPro:
     def simulate(self):
         #fill cache until its full
         trace = self.trace
-        while len(self.cache) < self.cache_size:
+        initial_faults = 0
+        while initial_faults < self.cache_size:
             page = trace.pop(0)
             if page in self.cache:
                 #hit
@@ -150,10 +151,11 @@ class ClockPro:
                 self.ref[self.cache.index(page)] = 1
             else: 
                 #fault
-                self.fault+=1
+                self.faults+=1
                 self.cache[self.free_index] = page
                 self.free_index+=1
-
+                initial_faults+=1
+                
         #cache is now filled
         #for every miss we now need to evict
 
