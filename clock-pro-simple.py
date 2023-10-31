@@ -53,7 +53,7 @@ class ClockPro:
             self.refs[index] = max(0, ref-1)
             page = self.cache[index]
 
-            if ref == 0:
+            if ref <= 1:
                 self.cache[index] = None
                 self.free_index = index
                 self.add_non_res(page)
@@ -72,6 +72,7 @@ class ClockPro:
                 #fault
                 self.faults+=1
                 self.cache[self.free_index] = page
+                self.refs[self.free_index] = 1
                 self.free_index+=1
                 self.pages_in_cache+=1
 
@@ -92,7 +93,7 @@ class ClockPro:
                 self.faults+=1
                 self.evict()
                 self.cache[self.free_index] = page
-                self.refs[self.free_index] = 0
+                self.refs[self.free_index] = 1
 
                 if page in self.non_res_pages:
                     del self.non_res_pages[page]
