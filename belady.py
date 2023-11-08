@@ -89,5 +89,5 @@ if __name__ == "__main__":
     belady = Belady()
     belady.scan_file_into_list(file_path)
     belady.simulate()
-    print(f"Hits: {belady.hits}")
+    print(f"\nHits: {belady.hits}")
     print(f"Faults: {belady.faults}")

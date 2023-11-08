@@ -14,7 +14,7 @@ class Belady:
 
     def decrement_distance(self):
         for i in range(self.cache_size): 
-            if self.page_distance[i] < 0:
+            if self.page_distance[i] >= 0:
                 self.page_distance[i] -= 1
 
 # Function to read a file and put its rows into a list
@@ -122,7 +122,7 @@ class Belady:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        file_path = "trace_1751869864240"
+        file_path = "trace_1737075246791"
     else:
         file_path = sys.argv[1]
     belady = Belady()
