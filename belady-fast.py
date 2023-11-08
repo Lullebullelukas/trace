@@ -94,7 +94,8 @@ class Belady:
                 self.free_index+=1
                 initial_faults+=1
             progress += 1
-            print(f"progress: % {(progress/total_len)*100}", end='\r',flush=True)
+            if progress % 1000 == 0:
+                print(f"progress: % {(progress/total_len)*100}", end='\r',flush=True)
 
              
         #cache is now filled
@@ -115,7 +116,8 @@ class Belady:
                 self.cache[self.free_index] = page   
                 self.page_distance[self.free_index] = -1  
             progress += 1       
-            print(f"progress: % {(progress/total_len)*100}", end='\r', flush=True)
+            if progress % 1000 == 0:
+                print(f"progress: % {(progress/total_len)*100}", end='\r', flush=True)
                
 
 if __name__ == "__main__":
