@@ -196,7 +196,7 @@ class ClockPro:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        file_path = "trace_1737075246791"
+        file_path = "trace-big"
     else:
         file_path = sys.argv[1]
     clock_pro = ClockPro()

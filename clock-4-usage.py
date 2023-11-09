@@ -92,7 +92,7 @@ class Clock4Usage:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-            file_path = "trace_1737075246791"
+            file_path = "trace-big"
     else:
         file_path = sys.argv[1]
     string_list = scan_file_into_list(file_path)
