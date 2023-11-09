@@ -9,8 +9,13 @@ class Belady:
         self.faults = 0 
         self.hits = 0
         self.free_index = 0
-       
+        self.page_distance = [-1] * self.cache_size
 
+
+    def decrement_distance(self):
+        for i in range(self.cache_size): 
+            if self.page_distance[i] >= 0:
+                self.page_distance[i] -= 1
 
 # Function to read a file and put its rows into a list
     def scan_file_into_list(self,file_path):
@@ -29,18 +34,47 @@ class Belady:
     def evict(self):
         max_distance = -1
         self.free_index = 0
-        #loop through cache
+        non_known = set()
         for i in range(self.cache_size):
-            #loop through trace
-            for j in range(len(self.trace)):
-                if self.trace[j] == self.cache[i]:
-                    if j > max_distance:
-                        max_distance = j
-                        self.free_index = i
-                    break
-            if max_distance == -1:
-                self.free_index = i
-                return
+            non_known.add(self.cache[i])
+
+        for i in range(self.cache_size):
+            dist = self.page_distance[i]
+            if dist >= 0:
+                non_known.remove(self.cache[i])
+
+        #update our distance data structures
+        for j in range(len(self.trace)):
+            page = self.trace[j]
+            if page in non_known:
+                for i in range(self.cache_size):
+                    if self.cache[i] == page:
+                        self.page_distance[i] = j
+                non_known.remove(page)
+        
+        if len(non_known) != 0:
+            for i in range(self.cache_size):
+                page = self.cache[i]
+                if page in non_known:
+                    self.free_index = i
+                    self.page_distance[i] = -1
+                    return
+                
+        max_index = 0
+        for i in range(self.cache_size):
+            if self.page_distance[i] > max_distance:
+                max_distance = self.page_distance[i]
+                max_index = i
+
+        
+        self.free_index = max_index
+
+
+
+
+
+
+        
 
     def simulate(self):
         #fill cache until its full
@@ -60,8 +94,10 @@ class Belady:
                 self.free_index+=1
                 initial_faults+=1
             progress += 1
-            print(f"progress: % {(progress/total_len)*100}", end='\r',flush=True)
+            if progress % 1000 == 0:
+                print(f"progress: % {(progress/total_len)*100}", end='\r',flush=True)
 
+             
         #cache is now filled
         #for every miss we now need to evict
 
@@ -76,14 +112,17 @@ class Belady:
                 #fault
                 self.faults+=1
                 self.evict()
+                self.decrement_distance()
                 self.cache[self.free_index] = page   
+                self.page_distance[self.free_index] = -1  
             progress += 1       
-            print(f"progress: % {(progress/total_len)*100}", end='\r', flush=True)
+            if progress % 1000 == 0:
+                print(f"progress: % {(progress/total_len)*100}", end='\r', flush=True)
                
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        file_path = "trace_1751869864240"
+        file_path = "trace_1737075246791"
     else:
         file_path = sys.argv[1]
     belady = Belady()
