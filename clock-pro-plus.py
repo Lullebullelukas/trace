@@ -3,13 +3,13 @@ import sys
 #TODO: add to demoted set
         #call decrement and increment
 
-class ClockPro:
-    def __init__(self):
+class ClockProPlus:
+    def __init__(self,cache_size):
         self.trace = []
         self.cold_hand = 0
         self.hot_hand = 0
         self.test_hand = 0
-        self.cache_size = 255
+        self.cache_size = cache_size
         self.non_res_cache = [None] * self.cache_size
         self.cache = [None] * self.cache_size
         self.refs = [0] * self.cache_size
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     else:
         file_path = sys.argv[1]
         cache_size = 255
-    clock_pro = ClockPro()
+    clock_pro = ClockProPlus(cache_size)
     clock_pro.trace = clock_pro.scan_file_into_list(file_path)
     # Print the list of strings
     clock_pro.simulate()

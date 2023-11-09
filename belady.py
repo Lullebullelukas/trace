@@ -1,9 +1,9 @@
 import sys
 
 class Belady:
-    def __init__(self):
+    def __init__(self,cache_size):
         self.trace = []
-        self.cache_size = 255
+        self.cache_size = cache_size
         self.cache = [None] * self.cache_size
         self.refs = [0] * self.cache_size
         self.faults = 0 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         file_path = sys.argv[1]
         cache_size = 255
 
-    belady = Belady()
+    belady = Belady(cache_size)
     belady.scan_file_into_list(file_path)
     belady.simulate()
     print(f"\nHits: {belady.hits}")
