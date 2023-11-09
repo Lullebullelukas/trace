@@ -101,15 +101,19 @@ class ClockPro:
                     self.refs[self.free_index] = 4
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        file_path = "trace-big"
+    if not (len(sys.argv) == 3 or len(sys.argv) == 2):
+            file_path = "trace-big"
+            cache_size = 255
+    elif len(sys.argv) == 3: 
+        file_path = sys.argv[1]
+        cache_size = int(sys.argv[2])
     else:
         file_path = sys.argv[1]
+        cache_size = 255
+        
     clock_pro = ClockPro()
     clock_pro.trace = clock_pro.scan_file_into_list(file_path)
     # Print the list of strings
     clock_pro.simulate()
     print(f"Hits: {clock_pro.hits}")
     print(f"Faults: {clock_pro.faults}")
-    print(f"N Cold pages: {len(clock_pro.cold_pages)}")
-    print(f"N NonRes pages: {len(clock_pro.non_res_pages)}")

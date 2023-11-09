@@ -121,10 +121,16 @@ class Belady:
                
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        file_path = "trace-big"
+    if not (len(sys.argv) == 3 or len(sys.argv) == 2):
+            file_path = "trace-big"
+            cache_size = 255
+    elif len(sys.argv) == 3: 
+        file_path = sys.argv[1]
+        cache_size = int(sys.argv[2])
     else:
         file_path = sys.argv[1]
+        cache_size = 255
+
     belady = Belady()
     belady.scan_file_into_list(file_path)
     belady.simulate()

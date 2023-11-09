@@ -22,8 +22,8 @@ def scan_file_into_list(file_path):
 
 #disgusting python code but it works
 class Clock4Usage:
-    def __init__(self):
-        self.cache_size = 255
+    def __init__(self,cache_size):
+        self.cache_size = cache_size
         self.hits = 0
         self.clock_arm = 0
         self.list_of_pages = [None] * self.cache_size
@@ -86,15 +86,20 @@ class Clock4Usage:
 
             self.add_or_increment(cache,page)
         
-        print(f"Hits: {self.hits}")
-        print("Faults: " + str(self.faults))
+       
         
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if not (len(sys.argv) == 3 or len(sys.argv) == 2):
             file_path = "trace-big"
+            cache_size = 255
+    elif len(sys.argv) == 3: 
+        file_path = sys.argv[1]
+        cache_size = int(sys.argv[2])
     else:
         file_path = sys.argv[1]
+        cache_size = 255
+    
     string_list = scan_file_into_list(file_path)
     uniques = set()
     for string in string_list:
@@ -102,5 +107,8 @@ if __name__ == "__main__":
 
     print(f"Working set size: {len(uniques)}")
     print(f"list len {len(string_list)}")
-    clock_4_usage = Clock4Usage()
+    clock_4_usage = Clock4Usage(cache_size)
     clock_4_usage.simulate(string_list)
+    print(f"Hits: {clock_4_usage.hits}")
+    print("Faults: " + str(clock_4_usage.faults))
+
