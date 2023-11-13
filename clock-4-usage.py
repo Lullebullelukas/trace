@@ -20,7 +20,7 @@ def scan_file_into_list(file_path):
     return string_list
 
 class Clock4Usage:
-    def __init__(self,cache_size):
+    def __init__(self, cache_size):
         self.cache_size = cache_size
         self.hits = 0
         self.clock_arm = 0
@@ -43,7 +43,7 @@ class Clock4Usage:
             self.hits += 1
             cache[page] = min(cache[page] + 1, 4) 
 
-    def evict(self,cache):
+    def evict(self, cache):
         while True:
             #check counter, if it is leq than 1 evict
             if self.clock_arm == self.cache_size:
