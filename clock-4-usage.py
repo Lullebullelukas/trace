@@ -1,6 +1,5 @@
 import sys
 
-
 # Function to read a file and put its rows into a list
 def scan_file_into_list(file_path):
     # Initialize an empty list to store the strings
@@ -20,7 +19,6 @@ def scan_file_into_list(file_path):
 
     return string_list
 
-#disgusting python code but it works
 class Clock4Usage:
     def __init__(self,cache_size):
         self.cache_size = cache_size
@@ -30,51 +28,39 @@ class Clock4Usage:
         self.faults = 0
         self.hits = 0
 
-    
+    def decrement(self, cache, page):
+        cache[page] = max(cache[page] - 1, 0) 
 
-
-    def decrement(self,cache, page):
-        cache[page] = max(cache[page]-1, 0) 
-
-    def add_or_increment(self,cache,page):
-
+    def add_or_increment(self, cache, page):
         if page not in cache:
             #fault
-            self.faults+=1
+            self.faults += 1
             self.list_of_pages[self.clock_arm] = page
-            self.clock_arm+=1
-            cache[page]=1
+            self.clock_arm += 1
+            cache[page] = 1
         else:
             #hit
             self.hits += 1
-            cache[page] = min(cache[page]+1,4) 
-
+            cache[page] = min(cache[page] + 1, 4) 
 
     def evict(self,cache):
         while True:
             #check counter, if it is leq than 1 evict
-            if self.clock_arm >= self.cache_size:
+            if self.clock_arm == self.cache_size:
                 self.clock_arm = 0
-        
-            if self.list_of_pages[self.clock_arm] is None:
-                return
-
-
-            if cache[self.list_of_pages[self.clock_arm]] <= 1:
-                cache.pop(self.list_of_pages[self.clock_arm])
-                self.list_of_pages[self.clock_arm] = None
+            
+            page = self.list_of_pages[self.clock_arm]
+            self.decrement(cache, page)
+            if cache[page] == 0:
+                cache.pop(page)
                 return
             
-            self.decrement(cache,self.list_of_pages[self.clock_arm])
-            self.clock_arm+=1
-
-                
-
+            self.clock_arm += 1
 
     def simulate(self, accesses):
         cache = {}
-        while len(cache) < self.cache_size:
-            self.add_or_increment(cache,accesses.pop(0))
+        while accesses and (len(cache) < self.cache_size):
+            self.add_or_increment(cache, accesses.pop(0))
 
         #now the cache is full, for every insertion we need eviction
         self.clock_arm = 0 #reset clock arm
@@ -84,10 +70,7 @@ class Clock4Usage:
                 #we need to evict
                 self.evict(cache)
 
-            self.add_or_increment(cache,page)
-        
-       
-        
+            self.add_or_increment(cache, page)
 
 if __name__ == "__main__":
     if not (len(sys.argv) == 3 or len(sys.argv) == 2):
@@ -110,5 +93,4 @@ if __name__ == "__main__":
     clock_4_usage = Clock4Usage(cache_size)
     clock_4_usage.simulate(string_list)
     print(f"Hits: {clock_4_usage.hits}")
-    print("Faults: " + str(clock_4_usage.faults))
-
+    print(f"Faults: {clock_4_usage.faults}")
