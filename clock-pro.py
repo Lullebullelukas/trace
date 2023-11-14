@@ -57,10 +57,6 @@ class ClockPro:
                 self.hot_pages.add(page)
                 if len(self.hot_pages) > self.capacity_hot:
                     self.move_hot_hand()
-                new_index = self.hot_hand % self.cache_size - 1
-                if new_index == -1:
-                    new_index = self.cache_size - 1
-                self.cache.insert(new_index, self.cache.pop(index))
                 continue
             
             #if not referenced we can evict
@@ -78,11 +74,6 @@ class ClockPro:
 
                     if len(self.non_res_pages) > self.cache_size:
                         self.move_test_hand()
-            else:
-                new_index = self.hot_hand % self.cache_size - 1
-                if new_index == -1:
-                    new_index = self.cache_size - 0
-                self.cache.insert(new_index, self.cache.pop(index))
 
     def move_hot_hand(self):
         removed = False
