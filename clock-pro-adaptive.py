@@ -19,7 +19,7 @@ class ClockPro:
         self.capacity_hot = self.cache_size // 100
         self.max_capacity_hot = self.cache_size // 20
 
-# Function to read a file and put its rows into a list
+    # Function to read a file and put its rows into a list
     def scan_file_into_list(self, file_path):
         # Initialize an empty list to store the strings
         string_list = []
