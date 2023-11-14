@@ -53,7 +53,6 @@ class ClockPro:
             self.refs[index] = 0
 
             if page in self.test_pages and ref > 0:
-                self.test_pages.discard(page)
                 #it was in test period when got it, promote to hot
                 self.hot_pages.add(page)
                 if len(self.hot_pages) > self.capacity_hot:
@@ -71,7 +70,6 @@ class ClockPro:
                     self.capacity_hot = min(self.max_capacity_hot, self.capacity_hot + 1)
                     self.non_res_pages.add(page)
                     self.non_res_cache[index] = page
-                    self.test_pages.discard(page)
 
                     if len(self.non_res_pages) > self.cache_size:
                         self.move_test_hand()
@@ -99,6 +97,8 @@ class ClockPro:
                 #remove non res if we see one
                 self.non_res_pages.discard(non_res_page)
                 self.non_res_cache[index] = None 
+                if non_res_page in self.test_pages:
+                    self.test_pages.discard(non_res_page)
 
     def move_test_hand(self):
         removed = False
@@ -108,6 +108,8 @@ class ClockPro:
             page = self.cache[index]
             non_res_page = self.non_res_cache[index]
             if non_res_page:
+                if non_res_page in self.test_pages:
+                    self.test_pages.discard(non_res_page)
                 self.non_res_pages.discard(non_res_page)
                 self.non_res_cache[index] = None
                 removed = True
