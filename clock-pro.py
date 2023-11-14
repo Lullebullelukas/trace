@@ -16,7 +16,7 @@ class ClockPro:
         self.hot_pages = set()
         self.test_pages = set()
         self.non_res_pages = set()
-        self.capacity_hot = self.cache_size / 2
+        self.capacity_hot = self.cache_size // 20
 
 # Function to read a file and put its rows into a list
     def scan_file_into_list(self, file_path):
