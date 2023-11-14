@@ -159,7 +159,7 @@ class ClockPro:
                     self.non_res_cache[self.free_index] = None
                     #it was in test period when got it, promote to hot
                     self.hot_pages.add(page)
-                    if len(self.hot_pages) + 1 >= self.capacity_hot:
+                    if len(self.hot_pages) > self.capacity_hot:
                         self.move_hot_hand()
                 else:
                     self.test_pages.add(page) 
