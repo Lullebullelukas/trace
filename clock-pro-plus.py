@@ -60,6 +60,8 @@ class ClockProPlus:
                 self.test_pages.discard(page)
                 #it was in test period when got it, promote to hot
                 self.hot_pages.add(page)
+                if page in self.demoted_cold_pages:
+                    self.demoted_cold_pages.remove(page)
                 if len(self.hot_pages) > self.capacity_hot:
                     self.move_hot_hand()
                 continue
@@ -69,7 +71,6 @@ class ClockProPlus:
                 page = self.cache[index]
                 self.free_index = index
                 evicted = True
-                self.demoted_cold_pages.discard(page)
                 if page in self.test_pages:
                     #if in test period we put in non-res    
                     #appending this will make it over cap, so reduce by moving hands
@@ -79,6 +80,8 @@ class ClockProPlus:
 
                     if len(self.non_res_pages) > self.cache_size:
                         self.move_test_hand()
+                elif page in self.demoted_cold_pages:
+                    self.demoted_cold_pages.discard(page)
    
     def move_hot_hand(self):
         removed = False
@@ -103,6 +106,8 @@ class ClockProPlus:
                 #remove non res if we see one
                 self.non_res_pages.discard(non_res_page)
                 self.non_res_cache[index] = None
+                if non_res_page in self.demoted_cold_pages:
+                    self.demoted_cold_pages.remove(non_res_page)
 
     def move_test_hand(self):
         removed = False
@@ -112,6 +117,8 @@ class ClockProPlus:
             page = self.cache[index]
             non_res_page = self.non_res_cache[index]
             if non_res_page:
+                if non_res_page in self.demoted_cold_pages:
+                    self.demoted_cold_pages.remove(non_res_page)
                 self.non_res_pages.discard(non_res_page)
                 self.non_res_cache[index] = None
                 removed = True
