@@ -126,6 +126,7 @@ class ClockPro:
                 self.cache[self.free_index] = page
                 self.free_index += 1
                 initial_faults += 1
+                self.test_pages.add(page)
                 
         #cache is now filled
         #for every miss we now need to evict
