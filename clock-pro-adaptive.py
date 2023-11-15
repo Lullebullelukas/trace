@@ -67,7 +67,6 @@ class ClockPro:
                 if page in self.test_pages:
                     #if in test period we put in non-res    
                     #appending this will make it over cap, so reduce by moving hands
-                    self.capacity_hot = min(self.max_capacity_hot, self.capacity_hot + 1)
                     self.non_res_pages.add(page)
                     self.non_res_cache[index] = page
                     self.test_pages.discard(page)
