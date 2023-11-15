@@ -170,6 +170,7 @@ class ClockProPlus:
                 self.faults += 1
                 self.evict()
                 self.cache[self.free_index] = page
+                self.test_pages.add(page) 
 
                 if page in self.non_res_pages:
                     #it was in test period when got it, promote to hot
@@ -181,8 +182,6 @@ class ClockProPlus:
 
                     if len(self.hot_pages) > self.capacity_hot:
                         self.move_hot_hand()
-                else:
-                    self.test_pages.add(page) 
 
 if __name__ == "__main__":
     if not (len(sys.argv) == 3 or len(sys.argv) == 2):

@@ -95,8 +95,6 @@ class ClockPro:
                 #remove non res if we see one
                 self.non_res_pages.discard(non_res_page)
                 self.non_res_cache[index] = None 
-                if non_res_page in self.test_pages:
-                    self.test_pages.discard(non_res_page)
 
     def move_test_hand(self):
         removed = False
@@ -109,8 +107,6 @@ class ClockPro:
                 self.non_res_pages.discard(non_res_page)
                 self.non_res_cache[index] = None
                 removed = True
-                if non_res_page in self.test_pages:
-                    self.test_pages.discard(non_res_page)
             if page in self.test_pages:
                 self.test_pages.discard(page)
 
@@ -148,16 +144,15 @@ class ClockPro:
                 self.faults += 1
                 self.evict()
                 self.cache[self.free_index] = page
+                self.test_pages.add(page) 
 
                 if page in self.non_res_pages:
                     self.non_res_pages.discard(page)
                     self.non_res_cache[self.free_index] = None
                     #it was in test period when got it, promote to hot
                     self.hot_pages.add(page)
-                    if len(self.hot_pages) + 1 >= self.capacity_hot:
+                    if len(self.hot_pages) > self.capacity_hot:
                         self.move_hot_hand()
-                else:
-                    self.test_pages.add(page) 
 
 if __name__ == "__main__":
     if not (len(sys.argv) == 3 or len(sys.argv) == 2):

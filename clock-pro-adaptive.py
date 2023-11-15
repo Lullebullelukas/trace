@@ -70,6 +70,7 @@ class ClockPro:
                     self.capacity_hot = min(self.max_capacity_hot, self.capacity_hot + 1)
                     self.non_res_pages.add(page)
                     self.non_res_cache[index] = page
+                    self.test_pages.discard(page)
 
                     if len(self.non_res_pages) > self.cache_size:
                         self.move_test_hand()
@@ -91,14 +92,13 @@ class ClockPro:
             if page in self.test_pages:
                 #when hot hand passes over a page in test period we terminate that test period
                 self.test_pages.discard(page)
-                if self.refs[index] == 0:
+                if self.refs[index] == 0 and not page in self.hot_pages:
                     self.capacity_hot = min(self.max_capacity_hot, self.capacity_hot + 1)
             if non_res_page: 
                 #remove non res if we see one
                 self.non_res_pages.discard(non_res_page)
                 self.non_res_cache[index] = None 
-                if non_res_page in self.test_pages:
-                    self.test_pages.discard(non_res_page)
+                self.capacity_hot = min(self.max_capacity_hot, self.capacity_hot + 1)
 
     def move_test_hand(self):
         removed = False
@@ -108,14 +108,13 @@ class ClockPro:
             page = self.cache[index]
             non_res_page = self.non_res_cache[index]
             if non_res_page:
-                if non_res_page in self.test_pages:
-                    self.test_pages.discard(non_res_page)
                 self.non_res_pages.discard(non_res_page)
                 self.non_res_cache[index] = None
                 removed = True
+                self.capacity_hot = min(self.max_capacity_hot, self.capacity_hot + 1)
             if page in self.test_pages:
                 self.test_pages.discard(page)
-                if self.refs[index] == 0:
+                if self.refs[index] == 0 and not page in self.hot_pages:
                     self.capacity_hot = min(self.max_capacity_hot, self.capacity_hot + 1)
 
     def simulate(self):
@@ -147,13 +146,14 @@ class ClockPro:
                 self.hits += 1
                 #set ref to 1
                 self.refs[self.cache.index(page)] = 1
-                if page in self.test_pages:
+                if page in self.test_pages and not page in self.hot_pages:
                     self.capacity_hot = max(0, self.capacity_hot - 1)
             else:
                 #fault
                 self.faults += 1
                 self.evict()
                 self.cache[self.free_index] = page
+                self.test_pages.add(page) 
 
                 if page in self.non_res_pages:
                     self.capacity_hot = max(0, self.capacity_hot - 1)
@@ -163,8 +163,6 @@ class ClockPro:
                     self.hot_pages.add(page)
                     if len(self.hot_pages) > self.capacity_hot:
                         self.move_hot_hand()
-                else:
-                    self.test_pages.add(page) 
 
 if __name__ == "__main__":
     if not (len(sys.argv) == 3 or len(sys.argv) == 2):
